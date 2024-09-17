@@ -1,0 +1,67 @@
+# Get editor completions based on the config schema
+"$schema" = 'https://starship.rs/config-schema.json'
+
+# In this design, the left of the prompt shows location info (like what server you're on, what directory you're in),
+# and the right shows temporal info (like the time, the duration of the last command).
+
+# MARK: Prompt
+
+# This maintains a newline between previous commands and the prompt
+add_newline = true
+palette = "my_palette"
+
+format = """
+[](blue)$hostname$directory\
+[](fg:prev_bg bg:gray)$git_branch\
+[](fg:prev_bg bg:faded)$python\
+[](fg:prev_bg bg:none)\
+$fill\
+([](faded)$cmd_duration[](faded))\
+[](faded)$time[](faded)\
+\n$character"""
+
+# We use the fill module instead of the right prompt, which allows everything to be on the same line.
+
+# Palettes
+[palettes.my_palette]
+primary_text    = "#e3e5e5"
+light_gray      = "#a0a9cb"
+gray            = "#394260"
+faded           = "#212736"
+secondary_text  = "#769ff0"
+blue            = "#2680C7"
+
+# MARK: Modules
+
+[fill]
+symbol = ' '
+
+[directory]
+format = "[ $path ]($style)"
+style = "fg:primary_text bg:blue bold"
+
+[git_branch]
+symbol = ""
+style = "fg:secondary_text bg:gray"
+format = '[ $symbol $branch ]($style)'
+
+[python]
+symbol = "󱔎"
+style = "fg:secondary_text bg:faded"
+format = '[ ${symbol} ${version} (\($virtualenv\) )]($style)'
+
+[time]
+disabled = false
+time_format = "%I:%M %p"
+style = "fg:secondary_text bg:faded"
+format = "[ $time ]($style)"
+
+[cmd_duration]
+min_time = 2_000
+style = "fg:secondary_text bg:faded"
+format = "[ $duration ]($style)"
+
+[hostname]
+ssh_only = true
+style = "fg:primary_text bg:blue dimmed bold"
+format = "[ 󰅟 $hostname]($style)"
